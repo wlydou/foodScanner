@@ -78,9 +78,9 @@ const History = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ flexDirection: "row", justifyContent: "flex-end", paddingRight: 20, width: '100%' }}>
-                <TouchableOpacity style={{borderColor: '#000', borderWidth: 1, borderRadius: 50}}>
-                    <Icon name="delete" onPress={() => {
+            <View style={{ flexDirection: "row", justifyContent: "flex-end", width: '100%' }}>
+                <TouchableOpacity style={{borderColor: '#000', borderWidth: 1, borderRadius: 50, marginRight: 20}}>
+                    <Icon name="delete" size={32} onPress={() => {
                         setData([]);
                         AsyncStorage.removeItem('store');
                     }} />
