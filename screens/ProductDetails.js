@@ -9,23 +9,9 @@ const config = {
     deviceHeight: Dimensions.get('window').height
 }
 
-const getData = async () => {
-    try {
-        const jsonValue = await AsyncStorage.getItem('store')
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-        // error reading value
-        alert("WOAH " + e);
-    }
-}
-
 const ProductDetails = ({ route }) => {
 
     const data = route.params.params.productData;
-
-    getData().then((data) => {
-        console.log(data.length);
-    });
 
     return (
         <SafeAreaView style={styles.container}>
@@ -37,7 +23,7 @@ const ProductDetails = ({ route }) => {
                     }}>
                         <Image
                             source={{ uri: data.image_small_url }}
-                            style={{ width: 150, height: 150, borderRadius: 15, borderWidth: 2, borderColor: '#f4a261' }}
+                            style={{ width: 150, height: 150, borderRadius: 15, borderWidth: 2, borderColor: '#eaffd0' }}
                         />
                         <View style={{ flexDirection: 'column', margin: config.deviceWidth * 0.03 }} >
                             <Text>{data.product_name}</Text>
