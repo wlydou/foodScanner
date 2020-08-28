@@ -2,15 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, Image, Dimensions, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import Constants from 'expo-constants';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const config = {
     deviceWidth: Dimensions.get('window').width,
     deviceHeight: Dimensions.get('window').height
 }
 
+const getData = async () => {
+    try {
+        const jsonValue = await AsyncStorage.getItem('store')
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+        // error reading value
+        alert("WOAH " + e);
+    }
+}
+
 const ProductDetails = ({ route }) => {
 
     const data = route.params.params.productData;
+
+    getData().then((data) => {
+        console.log(data.length);
+    });
 
     return (
         <SafeAreaView style={styles.container}>
@@ -18,11 +33,11 @@ const ProductDetails = ({ route }) => {
                 <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                     <View style={{
                         backgroundColor: '#fff', flexDirection: 'row', justifyContent: 'flex-start',
-                        alignItems: 'flex-start', padding: config.deviceWidth * 0.03, marginBottom: config.deviceHeight * 0.01
+                        alignItems: 'flex-start', padding: config.deviceWidth * 0.02, marginBottom: config.deviceHeight * 0.01
                     }}>
                         <Image
                             source={{ uri: data.image_small_url }}
-                            style={{ width: 150, height: 150, borderRadius: 15, borderWidth: 1, borderColor: '#f4a261' }}
+                            style={{ width: 150, height: 150, borderRadius: 15, borderWidth: 2, borderColor: '#f4a261' }}
                         />
                         <View style={{ flexDirection: 'column', margin: config.deviceWidth * 0.03 }} >
                             <Text>{data.product_name}</Text>
@@ -51,11 +66,11 @@ const ProductDetails = ({ route }) => {
 
                     <View style={{ backgroundColor: '#fff', padding: config.deviceWidth * 0.02, width: '95%' }}>
                         <Text>Informations nutritionnelles</Text>
-                        <Text style={{padding: 10}}>
+                        <Text style={{ padding: 10 }}>
                             <Text>Nutriscore: </Text>
                             <Text style={{ fontWeight: "bold" }}>{data.nutriscore_grade.toUpperCase()}</Text>
                         </Text>
-                        <Text style={{padding: 10}}>Repères nutritionnels pour 100 g :</Text>
+                        <Text style={{ padding: 10 }}>Repères nutritionnels pour 100 g :</Text>
                         <DataTable>
 
                             <DataTable.Row>

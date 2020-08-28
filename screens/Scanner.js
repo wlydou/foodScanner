@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Scanner = ({ navigation }) => {
     const [hasPermission, setHasPermission] = useState(null);
@@ -10,6 +11,7 @@ const Scanner = ({ navigation }) => {
         (async () => {
             const { status } = await BarCodeScanner.requestPermissionsAsync();
             setHasPermission(status === 'granted');
+            AsyncStorage.removeItem('store');
         })();
     }, []);
 
@@ -20,10 +22,44 @@ const Scanner = ({ navigation }) => {
             .then((response) => response.json())
             .then((json) => {
                 if (json.status === 1) {
-                    console.log()
-                    navigation.navigate('Details', {
-                        params: { productData: json.product }
-                    }); 
+                    (async () => {
+                        /*
+                        try {
+                            let con = json.products;
+                            const products = await AsyncStorage.getItem('list') || '[]';
+                            console.log(products);
+                            products = JSON.parse(products);
+                            products.push(con);
+                            console.log(products);
+
+                            navigation.navigate('Details', {
+                                params: { productData: product }
+                            });
+                        } catch (error) {
+                            alert("AYYYY" + error)
+                        }
+                        */
+                        try {
+                            const fetchStorage = await AsyncStorage.getItem('store') || '[]';
+                            let products = JSON.parse(fetchStorage);
+                            
+                            //Verify barcode exists in storage
+                            if((products.findIndex(element => element.code === json.product.code)) < 0){
+                                products.push(json.product);
+                                await AsyncStorage.setItem('store', JSON.stringify(products));
+                            };
+                            
+                            console.log("LENGTH : " + products.length)
+                            
+                            navigation.navigate('Details', {
+                                params: { productData: json.product }
+                            });
+
+                        } catch (error) {
+                            alert("AYY" + error);
+                        }
+                    })();
+
                 } else {
                     Alert.alert(
                         "Error :",
